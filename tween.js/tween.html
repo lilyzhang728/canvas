@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>tween.js学习使用</title>
+	<style type="text/css">
+	 
+	</style>
+	<script type="text/javascript" src="js/tween.js"></script>
+</head>
+<body>
+	<div class="container">
+		<button class="btn">Linear</button><br>
+		<canvas id="mycanvas-Linear" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quad.easeIn</button><br>
+		<canvas id="mycanvas-Quad-easeIn" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quad.easeOut</button><br>
+		<canvas id="mycanvas-Quad-easeOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quad.easeInOut</button><br>
+		<canvas id="mycanvas-Quad-easeInOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Cubic.easeIn</button><br>
+		<canvas id="mycanvas-Cubic-easeIn" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Cubic.easeOut</button><br>
+		<canvas id="mycanvas-Cubic-easeOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Cubic.easeInOut</button><br>
+		<canvas id="mycanvas-Cubic-easeInOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quart.easeIn</button><br>
+		<canvas id="mycanvas-Quart-easeIn" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quart.easeOut</button><br>
+		<canvas id="mycanvas-Quart-easeOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Quart.easeInOut</button><br>
+		<canvas id="mycanvas-Quart-easeInOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+
+		<button class="btn">Bounce.easeInOut</button><br>
+		<canvas id="mycanvas-Bounce-easeInOut" width="950" height="100" style="border: 1px solid #000"></canvas><br><br>
+		
+	</div>
+	
+	<script type="text/javascript">
+	var isMoving=false;
+
+	var btns=document.getElementsByClassName("btn");
+	for(let i=0;i<btns.length;i++){
+		btns[i].addEventListener("click",function(){
+			var type=btns[i].innerHTML.split(".");
+			test(type);
+		})
+	}
+	/*btns.forEach(function(item){
+		var mode=item.id;
+		item.addEventListener("click",function(){
+			test(mode);
+		})
+	})*/
+		function test(type){
+			if (isMoving==true) {
+				return;
+			}
+			isMoving=true;
+			if (type.length==1) {
+				var canvas=document.getElementById("mycanvas-"+type[0]);
+			}else if (type.length==2) {
+				var canvas=document.getElementById("mycanvas-"+type[0]+"-"+type[1]);
+			}
+			
+			var context=canvas.getContext("2d");
+
+			var draw=function(left){
+				context.beginPath();
+				context.arc(left,50,40,0,2*Math.PI);
+				context.fillStyle="green";
+				context.fill();
+			}
+
+			var start=0;
+			var begin=40;
+			var end=(950-80);
+			var during=100;
+
+			var step=function(){
+				context.clearRect(0,0,canvas.width,canvas.height);
+				if (type.length==1) {
+					var fnGetCurrentPosition=Math.tween[type[0]];
+				}else if (type.length==2) {
+					var fnGetCurrentPosition=Math.tween[type[0]][type[1]];
+				}
+				var left=fnGetCurrentPosition(start,begin,end,during);
+				draw(left);
+				start++;
+				if (start<during) {
+					requestAnimationFrame(step);
+				}else{
+					isMoving=false;
+				}
+			}
+			step();
+		}
+	</script>
+</body>
+</html>
