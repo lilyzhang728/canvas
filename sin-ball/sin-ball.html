@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>正弦运动的球</title>
+</head>
+<body>
+	<canvas id="mycanvas" width="400" height="300" style="border: 1px solid #000"></canvas>
+	<button id="btn">增加球</button>
+
+	<canvas id="mycanvas2" width="400" height="300" style="border: 1px solid #000"></canvas>
+	<button id="btn2">增加球</button>
+
+	<script type="text/javascript">
+		//正弦运动
+		var canvas=document.getElementById("mycanvas");
+		var ctx=canvas.getContext("2d");
+
+		function drawLine(){
+			var x = 0;
+			var y = 20;
+			for(var angle = 0; angle < Math.PI*14 ; angle += 0.1) {
+					ctx.fillStyle = '#000';
+					ctx.beginPath();
+					x += 1;
+					y += Math.sin(angle) * 10;
+					//console.log(Math.sin(angle) * 10);
+					ctx.arc(x,y, 2, 2 * Math.PI, true);
+					ctx.fill();
+					}
+				}
+		//drawLine();
+
+		var balles=[];
+		var Ball=function(x,y,radius,angle){
+			this.x=x;
+			this.y=y;
+			this.radius=radius;
+			this.angle=0;
+		}
+		var btn=document.getElementById("btn");
+		btn.addEventListener("click",function(){
+			balles.push(new Ball(0,20,10));
+		});
+
+		function drawBall(){
+			ctx.clearRect(0,0,canvas.width,canvas.height);
+			drawLine();
+			for(var i=0;i<balles.length;i++){
+				if(balles[i].x>canvas.width){
+					balles.splice(i,1);
+					i-=1;
+				}else{
+					ctx.save();
+					balles[i].x++;
+					balles[i].y+=Math.sin(balles[i].angle) * 10;
+					balles[i].angle+=0.1;
+					ctx.beginPath();
+					ctx.fillStyle="#000";
+					ctx.arc(balles[i].x,balles[i].y,balles[i].radius,0,2*Math.PI);
+					ctx.fill();
+					ctx.restore();
+				}
+			};
+			requestAnimationFrame(drawBall);
+		}
+
+		/*window.onload=function(){
+			drawBall();
+		}*/
+
+
+		//脉冲运动
+		var canvas2=document.getElementById("mycanvas2");
+		var ctx2=canvas2.getContext("2d");
+		var btn2=document.getElementById("btn2");
+		
+		function Ball2(x,y,radius){
+			this.x=x;
+			this.y=y;
+			this.radius=radius;
+			this.scale=1;
+			this.angle=0;
+		}
+		var balles2=[];
+		btn2.addEventListener("click",function(){
+			var x=Math.floor(Math.random()*canvas2.width);
+			var y=Math.floor(Math.random()*canvas2.height);
+			balles2.push(new Ball2(x,y,10));
+		})
+
+		function drawBall2(){
+			ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+			for(var i=0;i<balles2.length;i++){
+				var ball=balles2[i];
+				ctx2.fillStyle="#000";
+				ball.scale=1+Math.sin(ball.angle);
+				ball.angle+=0.1;
+				ball.radius=10*ball.scale;
+				ctx2.beginPath();
+				ctx2.arc(ball.x,ball.y,ball.radius,0,2*Math.PI);
+				ctx2.fill();
+			}
+		}
+
+		requestAnimationFrame(drawBall2);
+
+		window.onload=function(){
+			drawBall();
+			drawBall2();
+		}
+	</script>
+</body>
+</html>
