@@ -8,5 +8,4 @@
 - 再分别作差，绑定到 mousemove 事件中，即可得到相对于画布的位置
 
 
-
 ![](https://github.com/lilyzhang728/canvas/blob/master/getPosition/img/demo.PNG)
