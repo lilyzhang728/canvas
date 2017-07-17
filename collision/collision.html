@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>碰撞检测-矩形</title>
+</head>
+<body>
+	<canvas id="mycanvas" width="400" height="300" style="background-color: #ccc;"></canvas>
+
+	<script type="text/javascript">
+		var canvas=document.getElementById("mycanvas");
+		var context=canvas.getContext("2d");
+		var rects=[];
+		var gravity=2;
+
+		function Rectangle(x,y,width,height){
+			this.x=x;
+			this.y=y;
+			this.width=width;
+			this.height=height;
+		}
+
+		function createRect(){
+			var x=Math.random()*canvas.width;
+			var rect=new Rectangle(x,0,30,30);
+			rects.push(rect);
+			return rect;
+		}
+		function intersect(bodyA,bodyB){
+			return !(bodyA.x+bodyA.width<bodyB.x || bodyB.x + bodyB.width < bodyA.x ||
+		bodyA.y + bodyA.height < bodyB.y ||
+		bodyB.y + bodyB.height < bodyA.y);
+		}
+
+		//先初始化一个矩形
+		var activeRect=new Rectangle(canvas.width/2,0,30,30);
+		rects.push(activeRect);
+
+		function animation(){
+			context.clearRect(0,0,canvas.width,canvas.height);
+			if (activeRect.y<(canvas.height-activeRect.height)) {
+				activeRect.y+=gravity;
+			}else{
+				activeRect.y=canvas.height-activeRect.height;
+				activeRect=createRect();
+			}
+			rects.forEach(function(rec,i){
+				if (activeRect!=rec && intersect(activeRect,rec)) {
+					activeRect.y=rec.y-activeRect.height;
+					activeRect=createRect();
+				}
+				context.fillStyle="red";
+				context.fillRect(rec.x,rec.y,rec.width,rec.height);
+			})
+			var requestID=requestAnimationFrame(animation);
+		}
+		window.onload=function(){
+			animation();
+		}
+	</script>
+</body>
+</html>
