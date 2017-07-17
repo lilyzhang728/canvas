@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>缓动效果</title>
+</head>
+<body>
+	<canvas id="mycanvas" width="400" height="300" style="background-color: #ccc;"></canvas>
+	<button id="btn">增加球</button>
+
+	<script type="text/javascript">
+		var canvas=document.getElementById("mycanvas");
+		var context=canvas.getContext("2d");
+		var btn=document.getElementById("btn");
+		var balls=[];
+		var coe=0.1;
+
+		function Ball(x,y,radius,speed){
+			this.x=x;
+			this.y=y;
+			this.radius=radius;
+			this.speed=speed;
+		}
+
+		btn.addEventListener("click",function(){
+			var y=Math.random()*(canvas.height-10)+10;
+			var speed={x:(canvas.width-5)*coe,y:0};
+			balls.push(new Ball(5,y,10,speed));
+		})
+
+		function drawBall(){
+			context.clearRect(0,0,canvas.width,canvas.height);
+			for(var i=0;i<balls.length;i++){
+				var ball=balls[i];
+				var distance=canvas.width-5-ball.x;
+				ball.speed.x=distance*coe;
+
+				ball.x+=ball.speed.x;
+				//ball.y+=ball.speed.y;
+
+				context.beginPath();
+				context.fillStyle="#000";
+				context.arc(ball.x,ball.y,ball.radius,0,2*Math.PI);
+				context.fill();
+			}
+			requestAnimationFrame(drawBall);
+		}
+
+		window.onload=function(){
+			drawBall();
+		}
+
+	</script>
+</body>
+</html>
