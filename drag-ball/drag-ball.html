@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>屏幕拖拽小球</title>
+</head>
+<body>
+<canvas id="canvas" width="400" height="300" style="background:#ccc"></canvas>
+
+<script type="text/javascript">
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	var centerX = Math.floor(canvas.width/2);
+	var centerY = Math.floor(canvas.height/2);
+	var balles = []; //存放页面上的球
+	// 球函数
+	function Ball(x, y, radius) {
+	this.x = x;
+	this.y = y;
+	this.radius = radius;
+	
+	};
+
+	balles.push(new Ball(centerX,centerY,30));
+	function drawBall(){
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		for(var i=0;i<balles.length;i++){
+		var ball=balles[i];
+		ctx.beginPath();
+		ctx.fillStyle="#000";
+		ctx.arc(ball.x,ball.y,ball.radius,0,2*Math.PI);
+		ctx.fill();
+		}
+		requestAnimationFrame(drawBall);
+	}
+
+	function getPosition(e){
+		var posx=e.pageX-canvas.offsetLeft;
+		var posy=e.pageY-canvas.offsetTop;
+		return {
+			posx:posx,
+			posy:posy
+		}
+	}
+
+	function containsPoint(e,ball){
+		var pos=getPosition(e);
+		if (Math.pow((pos.posx-ball.x),2)+Math.pow((pos.posy-ball.y),2)<Math.pow(ball.radius,2)) {
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	function dragBall(e){
+		var ball=balles[0];
+		if (isPressing && containsPoint(e,ball)) {
+			ball.x=getPosition(e).posx;
+			ball.y=getPosition(e).posy;
+			drawBall();
+		}
+
+	}
+
+	var isPressing=false;
+	canvas.addEventListener("mousedown",function(e){
+		isPressing=true;
+		dragBall(e);
+	})
+	canvas.addEventListener("mousemove",function(e){
+		dragBall(e);
+	})
+	canvas.addEventListener("mouseup",function(){
+		isPressing=false;
+	})
+
+	window.onload=function(){
+		drawBall();
+	}
+</script>
+
+</body>
+</html>
